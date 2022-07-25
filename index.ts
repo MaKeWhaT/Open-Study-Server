@@ -8,11 +8,14 @@ const { PORT } = process.env ?? {};
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://local.open-study.com:3000",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.use("/api/user", UserRouter);
 
-app.listen(PORT ?? 3000, () => {
-  console.log(`App Listening On Port ${PORT ?? 3000}`);
-});
+app.listen(PORT ?? 3000);

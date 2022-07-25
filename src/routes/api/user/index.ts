@@ -1,18 +1,24 @@
 import express from "express";
 import MongoController from "../../../database/mongo";
+import { toSha256 } from "../../../utils/encryption";
+import { sign } from "../../../utils/jwt";
 
 const userRouter = express.Router();
 
 userRouter.post("/join", async (req, res) => {
   const mongoController = new MongoController();
   let mongoConnection = null;
+  const { email, password, nickname } = req.body;
+  const encryptedPassword = toSha256(password);
   try {
     mongoConnection = await mongoController.getConnection();
     await mongoConnection
       ?.db()
       .collection(mongoController.COLLECTIONS.USER)
-      .insertOne(req.body);
-    res.status(201);
+      .insertOne({ email, password: encryptedPassword, nickname });
+    res
+      .status(201)
+      .json({ accessToken: sign({ email, password: encryptedPassword }) });
   } catch (error) {
     res.status(500).send(error);
   } finally {
