@@ -17,3 +17,7 @@ export const verify = (accessToken: string) => {
     return false;
   }
 };
+
+export const decode = (accessToken: string) => {
+  return jwt.decode(accessToken, { json: true });
+};
