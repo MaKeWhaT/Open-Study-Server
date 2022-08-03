@@ -17,12 +17,10 @@ userRouter.post("/login", async (req, res) => {
       ?.db()
       .collection(mongoController.COLLECTIONS.USER)
       .findOne({ email, password: encryptedPassword });
-    res
-      .status(200)
-      .json({
-        OK: !!userAccount,
-        accessToken: userAccount ? sign(userAccount) : null,
-      });
+    res.status(200).json({
+      OK: !!userAccount,
+      accessToken: userAccount ? sign(userAccount) : null,
+    });
   } catch {
     res.status(500);
   } finally {
@@ -40,7 +38,7 @@ userRouter.post("/join", async (req, res) => {
     password: encryptedPassword,
     nickname,
     level: 1,
-    exp: 0,
+    experience: 0,
     labels: [],
   };
   try {
@@ -51,6 +49,7 @@ userRouter.post("/join", async (req, res) => {
       .insertOne(initialUser);
     res.status(201).json({ accessToken: sign(initialUser) });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   } finally {
     res.end();
@@ -91,6 +90,10 @@ userRouter.get("/me", checkAuth, async (req, res) => {
   } finally {
     res.end();
   }
+});
+
+userRouter.get("/check-auth", checkAuth, (req, res) => {
+  res.status(200).end();
 });
 
 export default userRouter;

@@ -19,5 +19,5 @@ export const verify = (accessToken: string) => {
 };
 
 export const decode = (accessToken: string) => {
-  return jwt.decode(accessToken, { json: true });
+  return jwt.decode(accessToken);
 };
